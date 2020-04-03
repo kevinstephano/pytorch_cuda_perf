@@ -5,15 +5,16 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Element Wise')
 parser.add_argument('--batch_start', default='640', type=int, help='Sequence Length of Input')
-parser.add_argument('--batch_stop', default='10240', type=int, help='Sequence Length of Input')
+parser.add_argument('--batch_stop', default='20480', type=int, help='Sequence Length of Input')
 parser.add_argument('--batch_inc', default='640', type=int, help='Sequence Length of Input')
 parser.add_argument('--elements', default='1024', type=str, help='Sequence Length of Input')
 parser.add_argument('--trials', default='20', type=str, help='Number of Trials to Execute')
 parser.add_argument('--warmup-trials', default='5', type=str, help='Warmup Trials to discard')
+parser.add_argument('--cuda-bin', default='/usr/local/cuda/bin/', type=str, help='Cuda Path')
 
 args = parser.parse_args()
 
-default_list = ['nvprof', '--print-gpu-trace', '--csv', '--log-file', 'prof_file.csv', 'python', 'element_wise.py', '--trials', args.trials, '--warmup-trials', args.warmup_trials, '--elements', args.elements]
+default_list = [args.cuda_bin + 'nvprof', '--print-gpu-trace', '--csv', '--log-file', 'prof_file.csv', 'python', 'element_wise.py', '--trials', args.trials, '--warmup-trials', args.warmup_trials, '--elements', args.elements]
 
 assert args.batch_stop % args.batch_inc == 0, "ERROR! Your batch is not divisible by your increment."
 for batch in range(int(args.batch_start),int(args.batch_stop) + int(args.batch_inc), int(args.batch_inc)) :
